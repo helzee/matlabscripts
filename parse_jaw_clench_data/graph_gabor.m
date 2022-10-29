@@ -10,7 +10,7 @@ for index = 1:length(raw_data)
     matrix = raw_data{index};
 
     % displayFFT is more for testing so we resize matrix for easier
-    % visualization, we just look at the first column
+    % visualization, so we can just look at the first column
     if displayFFT
         matrix = matrix(:,1);
     end
@@ -45,7 +45,21 @@ for index = 1:length(raw_data)
     end
 
     figure(figIndex);
-    stackedplot(graph);
+    t = stackedplot(graph);
+    t.Title = sprintf('Figure %d unfiltered data', index);
+    t.XLabel = 'Data Points (300 samples per second)';
+
+    if displayFFT
+        t.DisplayLabels = ["Microvolts", "Algorithm Output"];
+    else
+        t.DisplayLabels = ["F3 - LE (Microvolts)", "F3 - LE Algorithm Output", ... 
+                           "F4 - LE (Microvolts)", "F4 - LE Algorithm Output", ...
+                           "C3 - LE (Microvolts)", "C3 - LE Algorithm Output", ...
+                           "C4 - LE (Microvolts)", "C4 - LE Algorithm Output", ...
+                           "Pz - LE (Microvolts)", "Pz - LE Algorithm Output", ...
+                           "P3 - LE (Microvolts)", "P3 - LE Algorithm Output", ...
+                           "P4 - LE (Microvolts)", "P4 - LE Algorithm Output",];
+    end
     
 end
 
