@@ -1,4 +1,4 @@
-function graph_gabor(raw_data, window_size, overlap, displayFFT)
+function graph_gabor(raw_data, window_size, overlap, displayFFT, filenames)
 %GRAPH_GABOR Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,17 +18,29 @@ for index = 1:length(raw_data)
     output = gabor_transform(matrix, window_size, overlap, displayFFT);
 
     dp = find(output, 1);
-
     output(1:dp,:) = 0;
 
-    more_than_half_eeg_channels = 5;
+    more_than_half_eeg_channels = 4;
 
     if size(output, 2) > more_than_half_eeg_channels
         graph = [zeros(size([matrix, output + 1])), zeros(size(output,1),1)];    
 
-        % There are 7 eeg channels. Right now we check if more than half of the
-        % data coming from the eeg channels agree that the data is a clench
-        graph(:,end) = sum(output, 2) > more_than_half_eeg_channels;
+        % Channel 1: F3-LE
+        % Channel 2: F4-LE
+        % Channel 5: Pz-LE
+        % Channel 6: P3-LE
+
+        % These channels are the most correct. Therefore we weigh them the
+        % most. Individually they can be 50%-100% correct but are wrong as
+        % false negatives so we can "OR" them to remove as many false
+        % negatives
+
+        F3F4 = output(:,1) & output(:,2);
+
+        alg_output = F3F4 | output(:,5) | output(:,6); %   |
+        % F3-LE, F4-LE, 
+
+        graph(:,end) = alg_output;
 
     else
         graph = zeros(size([matrix, output + 1]));
@@ -58,7 +70,7 @@ for index = 1:length(raw_data)
 
     figure(figIndex);
     t = stackedplot(graph);
-    t.Title = sprintf('Figure %d unfiltered data', index);
+    t.Title = sprintf('Figure %d unfiltered data(%s)', index, filenames{index});
     t.XLabel = 'Data Points (300 samples per second)';
 
     if displayFFT
