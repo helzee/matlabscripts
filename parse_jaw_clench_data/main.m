@@ -3,9 +3,9 @@ clc;
 close all;
 
 %% NOTE:
-% Due to matlab being a good programming language this script assumes the
-% current folder (which is shown on the left of the ide) has both the data
-% files and the program files.
+% Due to matlab being a good programming language the location of where you
+% are in the matlab ide(seen to the left) modifies the behavior of the
+% program
 
 % raw_unordered_eeg names_raw_eeg = parse_eeg('Data_RandomClench', '*_raw.csv', true);
 
@@ -20,8 +20,8 @@ do_bandpass = true;
 % sliding window, record maybe the mode or slice the fft graph into pieces
 % and then recording the pieces
 
-window_size = 300;
-window_overlap = 150;
+window_size = 300; %300
+window_overlap = 225; %225
 display_internal_fft = false;
 
 % You can add a '(1)' to the output from parse_eeg (filtered_unordered_eeg variable) if you only want to see 1
