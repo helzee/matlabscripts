@@ -6,13 +6,13 @@ assert(overlap < window_size, ...
     'You cannot overlap more than the size than the window! Perhaps swap your window_size/overlap variables?')
 
 if displayFFT
-    if window_size - overlap < 600
+    if window_size - overlap < 900
         
-        window_size = 600;
+        window_size = 900;
 
         overlap = 0;
 
-        disp("Changing window_size and overlap to 600 and 0 to make sure not too many windows are formed!")
+        disp("Changing window_size and overlap to 900 and 0 to make sure not too many windows are formed!")
     end
 end
 
@@ -78,6 +78,8 @@ for index = 1:length(raw_data)
 
     if displayFFT
         t.DisplayLabels = ["Microvolts", "Algorithm Output"];
+
+        break
     else
         t.DisplayLabels = ["F3 - LE (Microvolts)", "F3 - LE Algorithm Output", ... 
                            "F4 - LE (Microvolts)", "F4 - LE Algorithm Output", ...
