@@ -222,10 +222,10 @@ while notDone
                 plotCounter = 0;
             else
                 plotCounter = plotCounter + 1;
-            end
-        end
-    end
-end
+            end % Plot data
+        end % IF packet type == 1
+    end % If packet contains header
+end % while NotDone
 
 close all;
 fclose(t);

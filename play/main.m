@@ -127,7 +127,7 @@ while notDone
             end % Buffer
             
             %% Perform fourier transform on data
-            [isClentch, gaborCount, algOutput] = fourier(gaborCount, DATABUFFER_SIZE, NUM_CHANNELS, algOutput);
+            [runGizmo, gaborCount, algOutput] = fourier(gaborCount, DATABUFFER_SIZE, NUM_CHANNELS, algOutput);
 
         end % If packet type == 1
 
