@@ -32,15 +32,10 @@ if (saveFiles)
 end
 
 %% Customizable Constants
-MAX_PACKETS_DROPPED = 1500;
+MAX_PACKETS_DROPPED = 15000;
 
-FIGURE_Y_MAX_LIM = 1000;
-FIGURE_Y_MAX_MID_LIM = FIGURE_Y_MAX_LIM / 2;
-FIGURE_Y_MIN_LIM = -1 * FIGURE_Y_MAX_LIM;
-FIGURE_Y_MIN_MID_LIM = FIGURE_Y_MIN_LIM / 2;
-
-SLICE_STEP = 5;
-DATAPOINTS_PER_SEC = 300;
+WINDOW_SIZE = 300;
+SLICE_COUNT = 9;
 DATABUFFER_SIZE = 1201;
 NUM_CHANNELS = 4;
 Fs = 300; % Device collects 300 samples/sec
@@ -51,6 +46,17 @@ gaborCount = 0;
 dataCount = 0;
 plotCounter = 0;
 packetDropCounter = 0;
+
+% Preallocate memory to avoid repeated reaalocation in upcoming loop
+% Initialize timeLog and plotCounter for real time plotting
+allData = zeros(DATABUFFER_SIZE, NUM_CHANNELS);
+displayData = zeros(DATABUFFER_SIZE, NUM_CHANNELS);
+timeLog = zeros(DATABUFFER_SIZE, 1);
+algOutput = zeros(DATABUFFER_SIZE, 1);
+sliceVals = zeros(SLICE_COUNT, NUM_CHANNELS);
+
+runGizmo = 0;
+
 
 notDone = 1;
 while notDone
@@ -127,7 +133,7 @@ while notDone
             end % Buffer
             
             %% Perform fourier transform on data
-            [runGizmo, gaborCount, algOutput] = fourier(gaborCount, DATABUFFER_SIZE, NUM_CHANNELS, algOutput);
+            [isClentch, gaborCount, algOutput] = fourier(gaborCount, NUM_CHANNELS, algOutput, Fs, runGizmo, allData, sliceVals, dataCount, FREQ_INCR);
 
         end % If packet type == 1
 
