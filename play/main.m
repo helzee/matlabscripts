@@ -1,6 +1,9 @@
-clc;
-clear;
+function []=main(gizmo_ip, gizmo_port)
+
 close all;
+
+
+gizmo_client = tcpclient(gizmo_ip, gizmo_port)
 
 %% Settings
 runEvents = true;
@@ -59,7 +62,8 @@ runGizmo = 0;
 
 
 notDone = 1;
-while notDone
+%%while notDone
+while true
     %% Termination clause
     if t.Bytesavailable < 12                        %if there's not even enough data available to read the header
         packetDropCounter = packetDropCounter + 1;  %take a step towards terminating the whole thing
@@ -134,9 +138,12 @@ while notDone
             
             %% Perform fourier transform on data
             [isClentch, gaborCount, algOutput] = fourier(gaborCount, NUM_CHANNELS, algOutput, Fs, runGizmo, allData, sliceVals, dataCount, FREQ_INCR);
-
+            %send isClench to GizmoCommander
+            fprintf("Jaw clenched = %d", isClentch)
+            %%send client isClentch in 8 bit int
+            gizmo_client.write(isClentch,int8)
         end % If packet type == 1
-
+        
         %% Plot data in realtime
         if (showPlots)
             [plotCounter] = realTimePlot(plotCounter, algOutput, displayData, timeLog, dataCount);
@@ -148,3 +155,5 @@ end % While not done
 close all;
 fclose(t);
 fclose('all');
+
+end
