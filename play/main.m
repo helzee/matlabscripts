@@ -1,17 +1,18 @@
-function []=main(gizmo_ip, gizmo_port)
+function []=main(commander_ip, commander_port, dsi_ip, dsi_port)
 
 close all;
 
 
-gizmo_client = tcpclient(gizmo_ip, gizmo_port)
+commanderClient = tcpclient(commander_ip, commander_port);
+
 
 %% Settings
 runEvents = true;
 saveFiles = true;
-showPlots = true;
+showPlots = false;
 
 %% Initialize the TCP/IP
-t = tcpip('localhost', 8844);
+t = tcpip(dsi_ip, dsi_port);
 fclose(t); %just in case it was open from a previous iteration
 fopen(t); %opens the TCPIP connection
 
@@ -72,8 +73,8 @@ while true
             notDone = 0;                            %terminate the loop.
         end
 
-        disp('no bytes available') % Load bearing disp(). If removed increase the pause time
-        pause(0.001)
+        %disp('no bytes available') % Load bearing disp(). If removed increase the pause time
+        pause(0.05)
         continue
     else  %meaning, unless there's data available.
         packetDropCounter = 0;
@@ -137,11 +138,16 @@ while true
             end % Buffer
             
             %% Perform fourier transform on data
-            [isClentch, gaborCount, algOutput] = fourier(gaborCount, NUM_CHANNELS, algOutput, Fs, runGizmo, allData, sliceVals, dataCount, FREQ_INCR);
+            [isClench, gaborCount, algOutput] = fourier(gaborCount, NUM_CHANNELS, algOutput, Fs, runGizmo, allData, sliceVals, dataCount, FREQ_INCR);
             %send isClench to GizmoCommander
-            fprintf("Jaw clenched = %d", isClentch)
+            if (isClench > -1)
+                fprintf("jaw clenched = %d\n", isClench);
+                writeline(commanderClient, string(isClench));
+          
+            end
             %%send client isClentch in 8 bit int
-            gizmo_client.write(isClentch,int8)
+            
+            
         end % If packet type == 1
         
         %% Plot data in realtime
@@ -152,8 +158,6 @@ while true
 end % While not done
 
 
-close all;
-fclose(t);
-fclose('all');
+
 
 end
