@@ -12,20 +12,20 @@ saveFiles = true;
 showPlots = false;
 
 %% Initialize the TCP/IP
-t = tcpip(dsi_ip, dsi_port);
+t = tcpip(dsi_ip, dsi_port)
 fclose(t); %just in case it was open from a previous iteration
 fopen(t); %opens the TCPIP connection
 
 % Plotting
-if (showPlots)
-    newcolors = [0.83 0.14 0.14
-                 1.00 0.54 0.00
-                 0.47 0.25 0.80
-                 0.25 0.80 0.54
-                 0.00 0.00 1.00];
-    
-    colororder(newcolors);
-end 
+%if (showPlots)
+%    newcolors = [0.83 0.14 0.14
+%                 1.00 0.54 0.00
+%                 0.47 0.25 0.80
+%                 0.25 0.80 0.54
+%                 0.00 0.00 1.00];
+%    
+%    colororder(newcolors);
+%end 
 
 % Don't change this unless wearable sensing changes their packet structure
 HEADER_START = [64, 65, 66, 67, 68]; % All DSI packet headers begin with '@ABCD', corresponding to these ASCII codes.
